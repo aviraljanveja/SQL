@@ -1,1 +1,1 @@
-# SQL
+This is an SQL course, currently under development. It is based on the Mode SQL course. The concepts presented in this course can be directly practiced on example databases provided at mode.com.
