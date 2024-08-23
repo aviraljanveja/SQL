@@ -2,4 +2,4 @@
 
 - The concepts presented here can be practiced on example databases provided on mode.com.
 
--- Developed by Aviral Janveja (Copyright 2024)
+-- Developed by Aviral Janveja for the Panini AI initiative. (Copyright 2024)
