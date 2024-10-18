@@ -1,6 +1,6 @@
-- This is an SQL course is based on the "Mode SQL Tutorial" for data analytics. 
+- This is an SQL course based on the "Mode SQL Tutorial" for data analytics. 
 
-- A lot of extra fluff has been cut out, concepts have been simplified and course length has been trimmed down to explain it you in a much easier format through 3 well organized chapters.
+- A lot of extra unnecessary information has been cut out, concepts have been simplified and course length has been trimmed down to give you 3 easy well-organized chapters.
 
 - Some important introductory information regarding databases has also been added in chapter 1, which is missing in the original Mode tutorial.
 
