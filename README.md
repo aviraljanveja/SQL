@@ -1,10 +1,8 @@
-- This is an SQL course based on the "Mode SQL Tutorial" for data analytics. 
+- This is an abridged version of "SQL for Data Analysis" tutotrial by Mode.
 
-- A lot of extra unnecessary information has been cut out, concepts have been simplified and course length has been trimmed down to give you 3 easy well-organized chapters.
+- A lot of extra suff has been cut out, concepts have been simplified and course length has been trimmed down to give you 3 well-organized chapters.
 
-- Some important introductory information regarding databases has also been added in chapter 1, which is missing in the original Mode tutorial.
-
-- The concepts presented here can be practiced on example databases at [Mode Tutorial](https://mode.com/sql-tutorial).
+- The concepts presented here can be practiced on example databases from [Mode Tutorial](https://mode.com/sql-tutorial).
 
 - For booking a 1-on-1 guidance / mentoring / doubt-solving session with myself, send a request on 9157790749 via Whatsapp or Email at aviraljanveja@gmail.com. More information on : [panini AI website](https://aviraljanveja.my.canva.site/)
 
