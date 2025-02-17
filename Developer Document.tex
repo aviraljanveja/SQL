@@ -1,0 +1,213 @@
+\documentclass[12pt, letterpaper]{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{geometry}
+\geometry{a4paper, total={6in,10in}}
+
+\usepackage{palatino}
+\fontfamily{ppl}\selectfont
+
+\usepackage{csquotes}
+\usepackage{amsmath}
+
+\usepackage{microtype}
+
+\usepackage{hyperref}
+
+\usepackage{graphicx}
+\usepackage{float}
+
+\title{\textbf{\Huge Chapter 3 : \\ Joins}}
+\author{Aviral Janveja}
+\date{}
+
+
+\begin{document}
+
+
+\maketitle
+
+
+\section{Introduction}
+Up to this point, we have been working with only one table at a time. The real power of SQL however, comes from working with multiple tables in a database. Join is the way to combine data from two or more tables based on a common column between them.
+
+We have been working with the table on college football players. This table includes data on players, including each player's weight and the school that they play for. However, it does not contain much information about the school itself, such as the conference the school is in. That information is present in a separate table on college football teams.
+
+So, let us say that we want to figure out which conference has the highest average weight. Since this information is spread across two separate tables, we will construct the required join-query step by step.
+
+\subsection{Table Names}
+ First things first, when performing joins, typing in the long table names every time is pretty annoying, instead a shorter alias is much better. You can assign an alias by adding a space after the table name and typing in the intended alias, as shown below : 
+ 
+\begin{verbatim}
+    FROM benn.college_football_players players
+\end{verbatim}
+
+Once you have assigned an alias, you can refer to columns from that table in the SELECT clause using the alias name.
+
+\subsection{JOIN and ON}
+After the FROM statement, we have two new statements, JOIN which is followed by a table name and ON, which is followed by column names with an equals sign.
+
+\begin{verbatim}
+    FROM benn.college_football_players players
+    JOIN benn.college_football_teams teams
+    ON teams.school_name = players.school_name
+\end{verbatim}
+
+ON indicates how the two tables, the one after FROM and the one after JOIN, relate to each other. You can see from the example above that both these tables contain a common column called \textbf{school\_name}.
+
+During the join, SQL looks up each row of the school\_name column in the teams and players tables. If there is a match in row values, SQL takes all five columns from the teams table and joins them onto the ten columns of players table for that particular row, resulting in a combined fifteen column table.
+
+Once you have generated this new table using JOIN, you can use the aggregate function AVG on player weights and GROUP BY the conference column from the teams table :  
+
+\begin{verbatim}
+    SELECT teams.conference AS conference, 
+    AVG(players.weight) AS average_weight
+        FROM benn.college_football_players players
+        JOIN benn.college_football_teams teams
+        ON teams.school_name = players.school_name
+        GROUP BY teams.conference
+        ORDER BY AVG(players.weight) DESC
+\end{verbatim}
+
+Hence, providing the average weight for each conference and solving the problem statement we started with.
+
+
+\section{INNER JOIN}
+Inner join eliminates rows from both tables that do not satisfy the join condition set forth in the ON statement. In mathematical terms, an inner join is the intersection (AND) of two tables.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img_inner_join.png}
+    \caption{Inner Join}
+    \label{innerjoin}
+\end{figure}
+
+Therefore, if a player from the players table goes to a school that is not included in the teams table, that player will not be included in the result. Similarly, if there are schools in the teams table that do not match with schools in the players table, those rows will not be included in the result either.
+
+\begin{displayquote}
+    \textbf{Note} : JOIN and INNER JOIN will return the same result. INNER is the default type of JOIN.
+\end{displayquote}
+
+
+\section{Outer Joins}
+When performing an inner join, only matching rows from both tables are returned. In an outer join, In addition to the matched rows, unmatched rows from one or both of the tables are also returned, depending on the type of outer join.
+
+\subsection{LEFT JOIN}
+LEFT JOIN tells the database to return all rows from the table in the FROM clause (Table 1) and only matching rows from the table in the LEFT JOIN clause (Table 2).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{left_join.png}
+    \caption{Left Join}
+    \label{leftjoin}
+\end{figure}
+
+\textbf{Note} : you can use the WHERE clause after the JOIN and the ON clause to filter one or both tables before joining them. For example : 
+
+\begin{verbatim}
+SELECT table1.column1, table2.column1
+    FROM table1
+    LEFT JOIN table2
+    ON table1.column3 = table2.column3
+    WHERE table1.column4 IS NOT NULL
+    GROUP BY 1
+    ORDER BY 3 DESC
+\end{verbatim}
+
+\subsection{RIGHT JOIN}
+RIGHT JOIN is similar, except that it returns all rows from the table in the RIGHT JOIN clause (Table 2) and only matching rows from the table in the FROM clause (Table 1).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img_right_join.png}
+    \caption{Right Join}
+    \label{rightjoin}
+\end{figure}
+
+RIGHT JOIN is rarely used because you can achieve the same result by simply switching the table names in a LEFT JOIN. It is worth noting that LEFT JOIN and RIGHT JOIN can be written as LEFT OUTER JOIN and RIGHT OUTER JOIN as well.
+
+\subsection{FULL JOIN}
+LEFT JOIN and RIGHT JOIN return unmatched rows from one of the tables. FULL JOIN returns unmatched rows from both the tables. It is commonly used in conjunction with aggregate functions to understand the amount of overlap between two given tables.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img_full_outer_join.png}
+    \caption{Full Join}
+    \label{fulljoin}
+\end{figure}
+
+
+\section{Self Join}
+A self join is a regular join, but the table is joined with itself. Sometimes it could be useful to join a table onto itself. Here is an example. Consider a table named \textbf{Employees\_Table} with columns \textbf{employee\_id}, \textbf{employee\_name} and \textbf{manager\_id}. The manage\_id column contains the employee\_id of the manager. Now, suppose you want to retrieve the names of employees along with the names of their respective managers.
+
+Since, each employee in the company, which includes the managers, is assigned an employee\_id. Hence, using the manager\_id column, we can identify their names as follows : 
+
+\begin{verbatim}
+    SELECT e.employee_name AS Employee_Name, 
+    m.employee_name AS Manager_Name
+        FROM Employees e
+        JOIN Employees m 
+        ON e.manager_id = m.employee_id
+\end{verbatim}
+
+\textbf{Note} how the same table can be referenced multiple times using different aliases. In this case, \textbf{e} and \textbf{m}.
+
+In the above query, \textbf{e.manager\_id = m.employee\_id} specifies the condition for the join, where we match each manager with their respective employee\_id, resulting in a table where each row contains the name of the employee alongside the name of their manager.
+
+
+\section{UNION}
+While JOIN allows you to combine two datasets side-by-side, UNION allows you to stack one dataset on top of the other. Put differently, UNION allows you to write two separate SELECT statements and to have the results of both statements display in the combined table. For example, the following query will display all results from the first and the second portion of the query in the same table : 
+
+\begin{verbatim}
+    SELECT *
+        FROM table_part1
+
+    UNION
+
+    SELECT *
+        FROM table_part2
+\end{verbatim}
+
+\subsection{UNION ALL}
+UNION only appends distinct values. More specifically, when you use UNION, the data is appended and any rows in the appended table that are identical to rows in the first table are dropped. If you would like to append all the values from the second table, use \textbf{UNION ALL} : 
+
+\begin{verbatim}
+    SELECT *
+        FROM table_part1
+
+    UNION ALL
+
+    SELECT *
+        FROM table_part2
+\end{verbatim}
+
+SQL has some strict rules for appending data : 
+
+\begin{enumerate}
+    \item Both tables must have the same number of columns.
+    \item Theese columns must have the same data type and in the same order.
+\end{enumerate}
+
+While the column names don't necessarily have to be the same, you will find that they typically are. This is because most of the instances where you would want to use UNION, involve stitching together different parts of the same dataset, as in the example shown above.
+
+Since you are writing two separate SELECT statements, you can treat them differently before appending. For example, you can filter them differently using different WHERE clauses.
+
+
+\section{Joining on Multiple Keys}
+There are two major reasons you might want to join tables on multiple keys. The first has to do with accuracy. The second reason has to do with performance. This will be covered in greater detail later. 
+
+For now, all you need to know is that it can occasionally make your query run faster, even when it does not add to the accuracy of the query. For example, the results of the following query will be the same with or without the last line. However, the query runs more quickly with the last line included : 
+
+\begin{verbatim}
+SELECT table1.column1, table1.column2,
+       table2.column1, table2.column2
+    FROM table1
+    LEFT JOIN table2 
+    ON table1.column1 = table2.column1
+    AND table1.column2 = table2.column2
+\end{verbatim}
+
+It is worth noting that this will have relatively little effect for small datasets.
+
+
+\end{document}
